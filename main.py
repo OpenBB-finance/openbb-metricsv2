@@ -1,6 +1,7 @@
 """OpenBB Metrics."""
 
 import os
+import json
 import datetime as datetime
 from utilities.helpers import (
     get_discord_stats,
@@ -42,7 +43,31 @@ def get_metrics(functions: dict) -> dict:
     return metrics_dict
 
 
+def load_metrics(filepath):
+    """Load existing metrics from a file."""
+    if os.path.exists(filepath):
+        with open(filepath, "r") as file:
+            return json.load(file)
+    else:
+        return {}
+
+
+def save_metrics(data, filepath):
+    """Save metrics to a file."""
+    with open(filepath, "w") as file:
+        json.dump(data, file, indent=4)
+
+
+def merge_metrics(existing_metrics, new_results):
+    """Merge new results into existing metrics."""
+    for category, data in new_results.items():
+        if category not in existing_metrics:
+            existing_metrics[category] = []
+        existing_metrics[category].append(data)
+
+
 if __name__ == "__main__":
+    metrics_filename = "metrics.json"
     metrics_functions = {
         "newsletter": get_newsletter_subscribers,
         "terminal_downloads": get_terminal_downloads,
@@ -58,18 +83,25 @@ if __name__ == "__main__":
         "google_regions": get_google_regions,
         "google_queries": get_google_queries,
         "google_interest": get_google_interest,
-        "pipy": get_pipy_stats,
+        "pipy_downloads": get_pipy_stats,
     }
-    results = get_metrics(metrics_functions)
-    results = {str(datetime.datetime.now()): results}
 
-    if os.path.exists("metrics.json"):
-        with open("metrics.json", "r") as f:
-            data = f.read()
-            data = eval(data)
-            data.update(results)
-        with open("metrics.json", "w") as f:
-            f.write(str(data).replace("'", '"'))
-    else:
-        with open("metrics.json", "w") as f:
-            f.write(str(results).replace("'", '"'))
+    # results = get_metrics(metrics_functions)
+
+    # the all.json document is the one we wan't to update by adding the new data from the
+    # results dictionary
+    # the all.json has the same keys as the results dictionary and is a list of dictionaries
+    # so we need to append the new data to the list
+    metrics_filename = "metrics.json"
+
+    # Load existing data
+    existing_data = load_metrics(metrics_filename)
+
+    # Get new metrics
+    new_results = get_metrics(metrics_functions)
+
+    # Merge new metrics into existing
+    merge_metrics(existing_data, new_results)
+
+    # Save updated metrics
+    save_metrics(existing_data, metrics_filename)

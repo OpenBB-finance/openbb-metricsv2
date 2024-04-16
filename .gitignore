@@ -9,6 +9,8 @@ venv
 *.ipynb
 env/
 venv/
+all-*
+test.json
 !notebooks/jupyter/.gitkeep
 .python-version
 .mypy_cache
