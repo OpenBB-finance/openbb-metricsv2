@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "openbb-metrics"
+version = "1.0.0"
+description = "OpenBB Website Metrics"
+authors = ["OpenBB Team <hello@openbb.co>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+praw = "^7.7.1"
+requests = "^2.31.0"
+instaloader = "^4.11"
+python-youtube = "^0.9.4"
+beautifulsoup4 = "^4.12.3"
+pydantic = "^2.7.0"
+python-dotenv = "^1.0.1"
+pandas = "^2.2.2"
+pytrends = "^4.9.2"
+black = "^24.4.0"
+ruff = "^0.3.7"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
