@@ -86,22 +86,8 @@ if __name__ == "__main__":
         "pipy_downloads": get_pipy_stats,
     }
 
-    # results = get_metrics(metrics_functions)
-
-    # the all.json document is the one we wan't to update by adding the new data from the
-    # results dictionary
-    # the all.json has the same keys as the results dictionary and is a list of dictionaries
-    # so we need to append the new data to the list
     metrics_filename = "metrics.json"
-
-    # Load existing data
     existing_data = load_metrics(metrics_filename)
-
-    # Get new metrics
     new_results = get_metrics(metrics_functions)
-
-    # Merge new metrics into existing
     merge_metrics(existing_data, new_results)
-
-    # Save updated metrics
     save_metrics(existing_data, metrics_filename)
