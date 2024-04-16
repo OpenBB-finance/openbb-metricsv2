@@ -1,5 +1,7 @@
 """OpenBB Metrics."""
 
+import os
+import datetime as datetime
 from utilities.helpers import (
     get_discord_stats,
     get_github_stats,
@@ -59,5 +61,15 @@ if __name__ == "__main__":
         "pipy": get_pipy_stats,
     }
     results = get_metrics(metrics_functions)
-    with open("metrics.json", "w") as f:
-        f.write(str(results))
+    results = {str(datetime.datetime.now()): results}
+
+    if os.path.exists("metrics.json"):
+        with open("metrics.json", "r") as f:
+            data = f.read()
+            data = eval(data)
+            data.update(results)
+        with open("metrics.json", "w") as f:
+            f.write(str(data).replace("'", '"'))
+    else:
+        with open("metrics.json", "w") as f:
+            f.write(str(results).replace("'", '"'))
