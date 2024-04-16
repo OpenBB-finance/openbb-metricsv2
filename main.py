@@ -1,7 +1,5 @@
 """OpenBB Metrics."""
 
-import pandas as pd
-
 from utilities.helpers import (
     get_discord_stats,
     get_github_stats,
@@ -60,5 +58,6 @@ if __name__ == "__main__":
         "google_interest": get_google_interest,
         "pipy": get_pipy_stats,
     }
-    results = pd.DataFrame(get_metrics(metrics_functions))
-    results.to_json("metrics.json")
+    results = get_metrics(metrics_functions)
+    with open("metrics.json", "w") as f:
+        f.write(str(results))
