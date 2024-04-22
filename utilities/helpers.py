@@ -204,20 +204,21 @@ def get_google_queries():
     return result
 
 
-def get_headlines_stats() -> dict:
+def get_headlines_stats() -> list:
     """Get news headlines statistics."""
     url = f"https://newsapi.org/v2/everything?q=openbb&apiKey={settings.NEWSAPI_TOKEN}"
     data = requests.get(url, timeout=30)
+    results = []
     for i in data.json()["articles"]:
         published_date = convert_to_timestamp(i["publishedAt"])
-
-    result = {
-        "source": i["source"]["name"],
-        "title": i["title"],
-        "url": i["url"],
-        "published_date": published_date,
-    }
-    return result
+        result = {
+            "source": i["source"]["name"],
+            "title": i["title"],
+            "url": i["url"],
+            "published_date": published_date,
+        }
+        results.append(result)
+    return results
 
 
 def get_youtube_videos() -> dict:
