@@ -17,13 +17,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          architecture: 'x64'
+          cache: "pip"
 
       - name: Install dependencies
         run: |
-          python -m venv runner_env
-          source runner_env/bin/activate
-          pip install -r requirements.txt
+          pip install poetry toml
+          poetry install --no-interaction --no-ansi
 
       - name: Set Environment Variables
         run: |
@@ -42,7 +41,7 @@ jobs:
           echo "MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }}" >> $GITHUB_ENV
 
       - name: Run script
-        run: python main.py
+        run: poetry run python main.py
 
       - name: Add & Commit
         uses: EndBug/add-and-commit@v9.1.4
