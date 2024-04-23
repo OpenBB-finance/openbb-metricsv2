@@ -18,10 +18,6 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
       - name: Set Environment Variables
         run: |
           echo "POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}" >> $GITHUB_ENV
