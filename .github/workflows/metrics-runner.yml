@@ -9,21 +9,21 @@ jobs:
   update_metrics:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: 📟 Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: "pip"
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: |
           pip install poetry toml
           poetry install --no-interaction --no-ansi
 
-      - name: Set Environment Variables
+      - name: 🌐 Set Environment Variables
         run: |
           echo "POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}" >> $GITHUB_ENV
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD}}" >> $GITHUB_ENV
@@ -39,10 +39,10 @@ jobs:
           echo "MAILCHIMP_ZONE=${{ secrets.MAILCHIMP_ZONE }}" >> $GITHUB_ENV
           echo "MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }}" >> $GITHUB_ENV
 
-      - name: Run script
+      - name: 🧬 Run script
         run: poetry run python main.py
 
-      - name: Add & Commit
+      - name: 📊 Commit metrics file
         uses: EndBug/add-and-commit@v9.1.4
         with:
           add: 'metrics.json'
