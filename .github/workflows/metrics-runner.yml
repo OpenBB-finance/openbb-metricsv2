@@ -2,9 +2,8 @@ name: Update Metrics
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day.
+    - cron: '0 */12 * * *'  # Runs at minute 0 past every 12th hour.
   workflow_dispatch:
-  push:
 
 jobs:
   update_metrics:
