@@ -65,7 +65,6 @@ def merge_metrics(existing_metrics: dict, new_results: dict) -> None:
 
 
 if __name__ == "__main__":
-    metrics_filename = "metrics.json"
     metrics_functions = {
         "newsletter": get_newsletter_subscribers,
         "terminal_downloads": get_terminal_downloads,
