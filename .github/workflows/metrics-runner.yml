@@ -1,0 +1,48 @@
+name: Update Metrics
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day.
+  workflow_dispatch: 
+
+jobs:
+  update_metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set Environment Variables
+        run: |
+          echo "POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD}}" >> $GITHUB_ENV
+          echo "POSTGRES_URL=${{ secrets.POSTGRES_URL }}" >> $GITHUB_ENV
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }}" >> $GITHUB_ENV
+          echo "REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "REDDIT_USER_AGENT=${{ secrets.REDDIT_USER_AGENT }}" >> $GITHUB_ENV
+          echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
+          echo "NEWSAPI_TOKEN=${{ secrets.NEWSAPI_TOKEN }}" >> $GITHUB_ENV
+          echo "YOUTUBE_TOKEN=${{ secrets.YOUTUBE_TOKEN }}" >> $GITHUB_ENV
+          echo "MAILCHIMP_ZONE=${{ secrets.MAILCHIMP_ZONE }}" >> $GITHUB_ENV
+          echo "MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Run script
+        run: python main.py
+
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          add: 'metrics.json'
+    
