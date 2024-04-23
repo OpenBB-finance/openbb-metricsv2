@@ -1,12 +1,11 @@
 """Helper functions for metrics."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import praw
 import requests
 from bs4 import BeautifulSoup
-from instaloader import Instaloader, Profile
 from pytrends.request import TrendReq
 from pyyoutube import Api
 
@@ -20,7 +19,7 @@ current_date = int(datetime.timestamp(datetime.now()))
 def get_mentions(term: str) -> dict:
     """Get interest over time from google api [Source: google]."""
     try:
-        pytrend = TrendReq()
+        pytrend = TrendReq(timeout=(10, 25))
         pytrend.build_payload(kw_list=[term])
         df = pytrend.interest_over_time()
         df = df.resample("D").sum()
@@ -43,7 +42,7 @@ def get_mentions(term: str) -> dict:
 def get_regions(term: str) -> dict:
     """Get interest by region from google api [Source: google]."""
     try:
-        pytrend = TrendReq()
+        pytrend = TrendReq(timeout=(10, 25))
         pytrend.build_payload(kw_list=[term])
         df_regions = pytrend.interest_by_region().sort_values([term], ascending=False)
         df_regions = df_regions.reset_index()
@@ -62,7 +61,7 @@ def get_regions(term: str) -> dict:
 def get_queries(term: str, limit: int = 10) -> dict:
     """Get related queries from google api [Source: google]."""
     try:
-        pytrend = TrendReq()
+        pytrend = TrendReq(timeout=(10, 25))
         pytrend.build_payload(kw_list=[term])
         df = pytrend.related_queries()
         df = df[term]["top"].head(limit)
@@ -121,53 +120,53 @@ def get_terminal_downloads() -> dict:
     return result
 
 
-def twitter_bearer_oauth(r):
-    """Method required by bearer token authentication."""
-    r.headers["Authorization"] = f"Bearer {settings.TWITTER_BEARER_TOKEN}"
-    r.headers["User-Agent"] = "v2UserLookupPython"
-    return r
+# def twitter_bearer_oauth(r):
+#     """Method required by bearer token authentication."""
+#     r.headers["Authorization"] = f"Bearer {settings.TWITTER_BEARER_TOKEN}"
+#     r.headers["User-Agent"] = "v2UserLookupPython"
+#     return r
 
 
-def connect_to_twitter_endpoint(url: str) -> dict:
-    """Connect to Twitter endpoint."""
-    response = requests.get(url, auth=twitter_bearer_oauth, timeout=30)
-    if response.status_code != 200:
-        return {}
-    return response.json()
+# def connect_to_twitter_endpoint(url: str) -> dict:
+#     """Connect to Twitter endpoint."""
+#     response = requests.get(url, auth=twitter_bearer_oauth, timeout=30)
+#     if response.status_code != 200:
+#         return {}
+#     return response.json()
 
 
-def get_twitter_stats() -> dict:
-    """Get twitter statistics."""
-    url = "https://api.twitter.com/1.1/users/show.json?screen_name=openbb_finance"
-    data = connect_to_twitter_endpoint(url)
-    total_followers = data["followers_count"]
+# def get_twitter_stats() -> dict:
+#     """Get twitter statistics."""
+#     url = "https://api.twitter.com/1.1/users/show.json?screen_name=openbb_finance"
+#     data = connect_to_twitter_endpoint(url)
+#     total_followers = data["followers_count"]
 
-    url = (
-        "https://api.twitter.com/2/users/1388522440536494081/tweets?tweet.fields=attachments,author_id,created_at,"
-        "public_metrics,source,referenced_tweets"
-    )
-    data = connect_to_twitter_endpoint(url)
-    likes, retweets = 0, 0
-    for i in data["data"]:
-        metrics = i["public_metrics"]
-        if i["created_at"] > str(datetime.utcnow() - timedelta(days=1)):
-            likes += metrics["like_count"]
-            retweets += metrics["retweet_count"]
+#     url = (
+#         "https://api.twitter.com/2/users/1388522440536494081/tweets?tweet.fields=attachments,author_id,created_at,"
+#         "public_metrics,source,referenced_tweets"
+#     )
+#     data = connect_to_twitter_endpoint(url)
+#     likes, retweets = 0, 0
+#     for i in data["data"]:
+#         metrics = i["public_metrics"]
+#         if i["created_at"] > str(datetime.utcnow() - timedelta(days=1)):
+#             likes += metrics["like_count"]
+#             retweets += metrics["retweet_count"]
 
-    url = "https://api.twitter.com/2/tweets/counts/recent?query=openbb&granularity=hour"
-    data = connect_to_twitter_endpoint(url)
-    mentions = 0
-    for i in data["data"][-24:]:
-        mentions += i["tweet_count"]
+#     url = "https://api.twitter.com/2/tweets/counts/recent?query=openbb&granularity=hour"
+#     data = connect_to_twitter_endpoint(url)
+#     mentions = 0
+#     for i in data["data"][-24:]:
+#         mentions += i["tweet_count"]
 
-    result = {
-        "total_followers": total_followers,
-        "likes": likes,
-        "retweets": retweets,
-        "mentions": mentions,
-        "updated_date": current_date,
-    }
-    return result
+#     result = {
+#         "total_followers": total_followers,
+#         "likes": likes,
+#         "retweets": retweets,
+#         "mentions": mentions,
+#         "updated_date": current_date,
+#     }
+#     return result
 
 
 def get_reddit_stats() -> dict:
@@ -337,16 +336,16 @@ def get_youtube_stats() -> dict:
     return result
 
 
-def get_instagram_stats() -> dict:
-    """Get Instagram statistics."""
-    insta_loader = Instaloader()
-    insta_loader.login(settings.INSTAGRAM_USERNAME, settings.INSTAGRAM_PASSWORD)
-    total_followers = Profile.from_username(
-        insta_loader.context, "openbb.finance"
-    ).followers
+# def get_instagram_stats() -> dict:
+#     """Get Instagram statistics."""
+#     insta_loader = Instaloader()
+#     insta_loader.login(settings.INSTAGRAM_USERNAME, settings.INSTAGRAM_PASSWORD)
+#     total_followers = Profile.from_username(
+#         insta_loader.context, "openbb.finance"
+#     ).followers
 
-    result = {"total_followers": total_followers, "updated_date": current_date}
-    return result
+#     result = {"total_followers": total_followers, "updated_date": current_date}
+#     return result
 
 
 def get_pipy_stats() -> dict:

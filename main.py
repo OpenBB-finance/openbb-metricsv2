@@ -41,7 +41,7 @@ def get_metrics(functions: dict) -> dict:
     return metrics_dict
 
 
-def load_metrics(filepath):
+def load_metrics(filepath: str) -> dict:
     """Load existing metrics from a file."""
     if os.path.exists(filepath):
         with open(filepath, "r") as file:
@@ -50,13 +50,13 @@ def load_metrics(filepath):
         return {}
 
 
-def save_metrics(data, filepath):
+def save_metrics(data: dict, filepath: str) -> None:
     """Save metrics to a file."""
     with open(filepath, "w") as file:
         json.dump(data, file, indent=4)
 
 
-def merge_metrics(existing_metrics, new_results):
+def merge_metrics(existing_metrics: dict, new_results: dict) -> None:
     """Merge new results into existing metrics."""
     for category, data in new_results.items():
         if category not in existing_metrics:
