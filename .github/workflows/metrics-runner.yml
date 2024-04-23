@@ -21,6 +21,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python -m venv runner_env
+          source runner_env/bin/activate
           pip install -r requirements.txt
 
       - name: Set Environment Variables
