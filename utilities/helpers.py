@@ -98,7 +98,7 @@ def get_newsletter_subscribers(audience_id: str = "e8ecacb821") -> dict:
 def get_terminal_downloads() -> dict:
     """Get terminal download statistics."""
     data = requests.get(
-        "https://api.github.com/repos/OpenBB-finance/openbbterminal/releases/latest",
+        "https://api.github.com/repos/OpenBB-finance/OpenBB/releases/latest",
         timeout=30,
     ).json()
     version, macos, windows = data["tag_name"], 0, 0
@@ -278,7 +278,7 @@ def add_page_number(current_url: str) -> str:
 
 def get_github_stats() -> dict:
     """Get Github statistics."""
-    url = "https://api.github.com/repos/OpenBB-finance/OpenBBTerminal/contributors?per_page=100&anon=false&page=1"
+    url = "https://api.github.com/repos/OpenBB-finance/OpenBB/contributors?per_page=100&anon=false&page=1"
     contributors = 0
     data = requests.get(url, timeout=30).json()
     contributors += len(data)
@@ -287,21 +287,21 @@ def get_github_stats() -> dict:
         data = requests.get(url, timeout=30).json()
         contributors += len(data)
 
-    url = "https://api.github.com/repos/OpenBB-finance/OpenBBTerminal"
+    url = "https://api.github.com/repos/OpenBB-finance/OpenBB"
     data = requests.get(url, timeout=30).json()
     stars = data["stargazers_count"]
     forks = data["forks_count"]
     issues = data["open_issues_count"]
 
-    url = "https://api.github.com/search/issues?q=repo:OpenBB-finance/OpenBBTerminal%20is:issue%20is:closed"
+    url = "https://api.github.com/search/issues?q=repo:OpenBB-finance/OpenBB%20is:issue%20is:closed"
     data = requests.get(url, timeout=30).json()
     closed_issues = data["total_count"]
 
-    url = "https://api.github.com/search/issues?q=repo:OpenBB-finance/OpenBBTerminal%20is:pr%20is:open"
+    url = "https://api.github.com/search/issues?q=repo:OpenBB-finance/OpenBB%20is:pr%20is:open"
     data = requests.get(url, timeout=30).json()
     open_pr = data["total_count"]
 
-    url = "https://api.github.com/search/issues?q=repo:OpenBB-finance/OpenBBTerminal%20is:pr%20is:closed"
+    url = "https://api.github.com/search/issues?q=repo:OpenBB-finance/OpenBB%20is:pr%20is:closed"
     data = requests.get(url, timeout=30).json()
     closed_pr = data["total_count"]
 
