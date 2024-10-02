@@ -2,7 +2,7 @@ name: Update Metrics
 
 on:
   schedule:
-    - cron: '0 */12 * * *'  # Runs at minute 0 past every 12th hour.
+    - cron: "0 */12 * * *" # Runs at minute 0 past every 12th hour.
   workflow_dispatch:
 
 jobs:
@@ -11,11 +11,19 @@ jobs:
     steps:
       - name: 📟 Check out repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: 📥 Install Git LFS
+        run: |
+          sudo apt-get update
+          sudo apt-get install git-lfs
+          git lfs install
 
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
           cache: "pip"
 
       - name: 📦 Install dependencies
@@ -45,5 +53,5 @@ jobs:
       - name: 📊 Commit metrics file
         uses: EndBug/add-and-commit@v9.1.4
         with:
-          add: 'metrics.json'
-    
+          add: "metrics.json"
+          message: "Update metrics file"
